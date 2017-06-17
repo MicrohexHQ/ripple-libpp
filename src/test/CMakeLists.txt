@@ -1,7 +1,8 @@
-# cmake file for ripplelibppdemo
+# cmake file for ripplelibppdemo/ripplelibpptest
 
 list(APPEND CMAKE_MODULE_PATH
-  "${CMAKE_CURRENT_SOURCE_DIR}/../../extras/rippled/Builds/CMake")
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../Builds/CMake")
+
 include(CMakeFuncs)
 
 if (nonunity)
@@ -21,16 +22,27 @@ check_gcc4_abi()
 
 include_directories(
   SYSTEM
-  ../../extras/rippled/src
-  ../../extras/rippled/src/beast/include
-  ../../extras/rippled/src/beast/extras
-  ../../src/include)
+  ../../src
+  ../../src/include
+  ../../src/beast
+  ../../src/beast/include
+  ../../src/beast/extras
+  ../../src/secp256k1/include
+  ../../src/ed25519-donna)
 
 special_build_flags()
 
 ############################################################
 
 use_boost(
+  # resist the temptation to alphabetize these. coroutine
+  # must come before context.
+  chrono
+  coroutine
+  context
+  date_time
+  filesystem
+  program_options
   regex
   system
   thread)
@@ -44,6 +56,7 @@ setup_build_boilerplate()
 ############################################################
 
 set(demo_src ripple-libpp_demo.cpp)
+set(test_src ripple-libpp_test.cpp)
 
 ############################################################
 
@@ -51,10 +64,9 @@ if (WIN32 OR is_xcode)
   file(GLOB_RECURSE all_headers
     src/*.hpp
     src/*.h
-    ../../extras/rippled/src/*.hpp
-    ../../extras/rippled/src/*.h
-    ../../extras/*/CMakeFuncs.cmake)
+    Builds/*/CMakeFuncs.cmake)
   list(APPEND demo_src "${all_headers}")
+  list(APPEND test_src "${all_headers}")
 
   # Properties
   set_property(
@@ -70,12 +82,18 @@ else()
   unset(no_unused_w)
 endif()
 
+FILE(GLOB SRC_FILES ./*.c ./*/*.c ./*/*/*.c ./*/*/*/*.c)
+
 ############################################################
+
+# Unity sources
+
+prepend(test_unity_srcs
+    ../../src/test/unity/
+    protocol_test_unity.cpp)
 
 if (WIN32 OR is_xcode)
   group_sources(src)
-  group_sources(extras/rippled/src)
-  group_sources(extras/rippled/Builds)
 endif()
 
 ############################################################
@@ -93,3 +111,22 @@ target_link_libraries(ripplelibppdemo
     ${SANITIZER_LIBRARIES})
 
 link_common_libraries(ripplelibppdemo)
+
+############################################################
+
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+add_executable(ripplelibpptest
+    ${test_src}
+    ${files}
+    ${test_unity_srcs}
+    $<TARGET_OBJECTS:ripplelibpp>)
+
+set_startup_project(ripplelibpptest)
+
+target_link_libraries(ripplelibpptest
+    ${OPENSSL_LIBRARIES}
+    ${PROTOBUF_LIBRARIES}
+    ${SANITIZER_LIBRARIES})
+
+link_common_libraries(ripplelibpptest)
