@@ -31,7 +31,7 @@ namespace ripple {
 //
 
 static int runUnitTests(
-    std::string const& pattern,
+    std::vector<std::string> const& patterns,
     std::string const& argument,
     bool quiet,
     bool log)
@@ -46,10 +46,13 @@ static int runUnitTests(
     else
         r = std::make_unique<reporter>(dout);
     r->arg(argument);
-    bool const anyFailed = r->run_each_if(
-        global_suites(), match_auto(pattern));
-    if(anyFailed)
-        return EXIT_FAILURE;
+    for (auto& pattern : patterns)
+    {
+        bool const anyFailed = r->run_each_if(
+            global_suites(), match_auto(pattern));
+        if (anyFailed)
+            return EXIT_FAILURE;
+    }
     return EXIT_SUCCESS;
 }
 
@@ -115,26 +118,27 @@ int run (int argc, char** argv)
     // Run the unit tests if requested.
     // The unit tests will exit the application with an appropriate return code.
     //
-    if (vm.count ("unittest"))
-    {
-        std::string argument;
+    std::vector<std::string> patterns;
+    std::string argument;
 
-        if (vm.count("unittest-arg"))
-            argument = vm["unittest-arg"].as<std::string>();
-        return runUnitTests(
-            vm["unittest"].as<std::string>(), argument,
-            static_cast<bool> (vm.count ("quiet")),
-            static_cast<bool> (vm.count ("unittest-log")));
-    }
-
-    if (!vm.count ("parameters"))
+    if (vm.count("unittest-arg"))
+        argument = vm["unittest-arg"].as<std::string>();
+    if (vm.count("parameters"))
     {
-        runUnitTests(
-            "", "",
-            static_cast<bool> (vm.count ("quiet")),
-            static_cast<bool> (vm.count ("unittest-log")));
-        return 0;
+        patterns = vm["parameters"].as<std::vector<std::string>>();
     }
+    if (vm.count("unittest"))
+    {
+        patterns.push_back(vm["unittest"].as<std::string>());
+    }
+    if (patterns.empty())
+    {
+        patterns.push_back({});
+    }
+    return runUnitTests(
+        patterns, argument,
+        bool(vm.count("quiet")),
+        bool(vm.count("unittest-log")));
 }
 
 } // ripple
@@ -154,7 +158,7 @@ int main (int argc, char** argv)
 
     static_assert (BOOST_VERSION >= 105700,
         "Boost version 1.57 or later is required to compile rippled");
-   
+
     auto const result (ripple::run (argc, argv));
     return result;
 }
