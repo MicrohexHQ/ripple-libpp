@@ -90,6 +90,8 @@ FILE(GLOB SRC_FILES ./*.c ./*/*.c ./*/*/*.c ./*/*/*/*.c)
 
 prepend(test_unity_srcs
     ../../src/test/unity/
+    basics_test_unity.cpp
+    beast_test_unity.cpp
     protocol_test_unity.cpp)
 
 if (WIN32 OR is_xcode)

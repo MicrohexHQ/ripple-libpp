@@ -60,19 +60,31 @@
 #include <ripple/protocol/impl/STVector256.cpp>
 #include <ripple/protocol/impl/IOUAmount.cpp>
 
+#include <ripple/basics/impl/CheckLibraryVersions.cpp>
 #include <ripple/basics/impl/contract.cpp>
 #include <ripple/basics/impl/CountedObject.cpp>
 #include <ripple/basics/impl/Log.cpp>
+#include <ripple/basics/impl/mulDiv.cpp>
+#include <ripple/basics/impl/RangeSet.cpp>
 #include <ripple/basics/impl/strHex.cpp>
 #include <ripple/basics/impl/StringUtilities.cpp>
 #include <ripple/basics/impl/Time.cpp>
+#include <ripple/beast/core/CurrentThreadName.cpp>
 #include <ripple/beast/core/SemanticVersion.cpp>
 #include <ripple/beast/hash/impl/spookyv2.cpp>
 #if ! BEAST_NO_XXHASH
 #include <ripple/beast/hash/impl/xxhash.c>
 #endif
 #include <ripple/beast/hash/impl/siphash.cpp>
+#include <ripple/beast/insight/impl/Collector.cpp>
+#include <ripple/beast/insight/impl/Hook.cpp>
+#include <ripple/beast/insight/impl/Metric.cpp>
+#include <ripple/beast/insight/impl/NullCollector.cpp>
+#include <ripple/beast/net/impl/IPAddressV4.cpp>
+#include <ripple/beast/net/impl/IPAddressV6.cpp>
+#include <ripple/beast/net/impl/IPEndpoint.cpp>
 #include <ripple/beast/utility/src/beast_Journal.cpp>
+#include <ripple/beast/utility/src/beast_PropertyStream.cpp>
 #include <ripple/crypto/impl/csprng.cpp>
 #include <ripple/crypto/impl/ec_key.cpp>
 #include <ripple/crypto/impl/GenerateDeterministicKey.cpp>
