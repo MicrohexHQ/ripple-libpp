@@ -34,7 +34,8 @@ public:
                     boost::asio::error::get_ssl_category ());
             std::string const s = beast::error_message_with_ssl(ec);
             BEAST_EXPECT(s == " (20,0,219) error:140000DB:SSL routines:SSL routines:short read" ||
-                s == " (20,0,219) error:140000DB:SSL routines:SSL routines:reason(219)");
+                s == " (20,0,219) error:140000DB:SSL routines:SSL routines:reason(219)" ||
+                s == " (20,0,219) error:140000DB:lib(20):func(0):reason(219)");
         }
     }
 };
