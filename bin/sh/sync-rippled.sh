@@ -15,7 +15,7 @@ else
 fi
 
 # Don't do anything if there are local changes
-git diff --exit-code
+#### git diff --exit-code
 
 
 # Build and test
@@ -23,8 +23,8 @@ for dir in ./build/cmake/*
 do
   cmake "${dir}"
   cmake --build "${dir}"
-  "${dir}"/ripplelibppdemo.exe
-  "${dir}"/ripplelibpptest.exe --unittest
+  "${dir}"/ripplelibppdemo
+  "${dir}"/ripplelibpptest --unittest
 done
 
 rsync -avP 
