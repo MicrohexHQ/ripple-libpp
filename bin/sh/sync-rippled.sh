@@ -18,15 +18,25 @@ fi
 #### git diff --exit-code
 
 
-# Build and test
-for dir in ./build/cmake/*
-do
-  cmake "${dir}"
-  cmake --build "${dir}"
-  "${dir}"/ripplelibppdemo
-  "${dir}"/ripplelibpptest --unittest
-done
+function buildtest
+{
+  # Build and test
+  for dir in ./build/cmake/*
+  do
+    cmake "${dir}"
+    cmake --build "${dir}"
+    "${dir}"/ripplelibppdemo
+    "${dir}"/ripplelibpptest --unittest
+  done
+}
 
-rsync -avP 
+# time buildtest
+
+rsync -avPh --checksum --existing --del \
+  --exclude=unity --exclude='*ripple-libpp*' --exclude='CMakeLists.txt' \
+  ${rippled}/src/ src/
+
+time buildtest
+
 
 echo Success
