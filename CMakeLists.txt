@@ -56,7 +56,7 @@
 # has similar constraints.
 cmake_minimum_required(VERSION 3.1.0)
 list(APPEND CMAKE_MODULE_PATH
-  "${CMAKE_CURRENT_SOURCE_DIR}/extras/rippled/Builds/CMake")
+  "${CMAKE_CURRENT_SOURCE_DIR}/Builds/CMake")
 include(CMakeFuncs)
 set(openssl_min 1.0.2)
 parse_target()
